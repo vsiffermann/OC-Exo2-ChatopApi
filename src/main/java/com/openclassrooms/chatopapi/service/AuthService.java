@@ -3,6 +3,8 @@ package com.openclassrooms.chatopapi.service;
 import com.openclassrooms.chatopapi.dto.AuthResponseDTO;
 import com.openclassrooms.chatopapi.dto.LoginRequestDTO;
 import com.openclassrooms.chatopapi.dto.RegisterRequestDTO;
+import com.openclassrooms.chatopapi.dto.UserDTO;
+import com.openclassrooms.chatopapi.mapper.UserMapper;
 import com.openclassrooms.chatopapi.model.User;
 import com.openclassrooms.chatopapi.repository.UserRepository;
 import com.openclassrooms.chatopapi.security.JwtUtils;
@@ -19,6 +21,7 @@ import java.time.LocalDateTime;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final AuthenticationManager authenticationManager;
@@ -51,5 +54,17 @@ public class AuthService {
 
         String token = jwtUtils.generateToken(user.getEmail());
         return new AuthResponseDTO(token);
+    }
+
+
+    public UserDTO me(String token) {
+        String email = jwtUtils.getEmailFromToken(token);
+        if(!jwtUtils.validateToken(token)) {
+            throw new RuntimeException("Invalid token");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return userMapper.toDto(user);
     }
 }

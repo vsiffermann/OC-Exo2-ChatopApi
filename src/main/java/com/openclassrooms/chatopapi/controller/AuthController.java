@@ -3,6 +3,7 @@ package com.openclassrooms.chatopapi.controller;
 import com.openclassrooms.chatopapi.dto.AuthResponseDTO;
 import com.openclassrooms.chatopapi.dto.LoginRequestDTO;
 import com.openclassrooms.chatopapi.dto.RegisterRequestDTO;
+import com.openclassrooms.chatopapi.dto.UserDTO;
 import com.openclassrooms.chatopapi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,5 +24,11 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody LoginRequestDTO request) {
         return ResponseEntity.ok(authService.login(request));
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserDTO> me(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = authorizationHeader.substring(7);
+        return ResponseEntity.ok(authService.me(token));
     }
 }
