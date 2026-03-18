@@ -26,6 +26,9 @@ REST API for the ChatOp rental platform.
    ```sql
    CREATE DATABASE chatop;
    ```
+
+   Schema and constraints are auto-created on first run via `src/main/resources/data.sql`.
+
    
 4. Run the application:
    ```bash
@@ -42,7 +45,7 @@ All configuration is managed via `env.properties`:
 
 Swagger UI is available at:
 ```
-http://localhost:3001/swagger-ui.html
+http://localhost:3001/swagger-ui/index.html
 ```
 
 API endpoints:
