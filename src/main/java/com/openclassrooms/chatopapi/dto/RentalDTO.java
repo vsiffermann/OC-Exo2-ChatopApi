@@ -5,10 +5,15 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class UserDTO {
+public class RentalDTO {
     private Integer id;
-    private String email;
     private String name;
+    private long surface;
+    private long price;
+    private String picture;
+    private String description;
+    @JsonProperty("owner_id")
+    private Integer ownerId;
     @JsonProperty("created_at")
     private LocalDateTime createdAt;
     @JsonProperty("updated_at")
