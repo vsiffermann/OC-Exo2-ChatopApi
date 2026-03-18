@@ -46,11 +46,11 @@ public class AuthService {
 
     public AuthResponseDTO login(LoginRequestDTO request) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+            new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );
 
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new RuntimeException("User not found"));
 
         String token = jwtUtils.generateToken(user.getEmail());
         return new AuthResponseDTO(token);
@@ -64,7 +64,7 @@ public class AuthService {
         }
 
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new RuntimeException("User not found"));
         return userMapper.toDto(user);
     }
 }

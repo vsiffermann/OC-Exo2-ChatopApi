@@ -15,13 +15,13 @@ public class UserService {
 
     public UserDTO getUserById(Integer id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new RuntimeException("User not found"));
         return userMapper.toDto(user);
     }
 
     public UserDTO getUserByEmail(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+            .orElseThrow(() -> new RuntimeException("User not found"));
         return userMapper.toDto(user);
     }
 }

@@ -26,28 +26,28 @@ public class JwtUtils {
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
 
         return Jwts.builder()
-                .subject(email)
-                .issuedAt(now)
-                .expiration(expiryDate)
-                .signWith(getSigningKey())
-                .compact();
+            .subject(email)
+            .issuedAt(now)
+            .expiration(expiryDate)
+            .signWith(getSigningKey())
+            .compact();
     }
 
     public String getEmailFromToken(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload()
-                .getSubject();
+            .verifyWith(getSigningKey())
+            .build()
+            .parseSignedClaims(token)
+            .getPayload()
+            .getSubject();
     }
 
     public boolean validateToken(String token) {
         try {
             Jwts.parser()
-                    .verifyWith(getSigningKey())
-                    .build()
-                    .parseSignedClaims(token);
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;

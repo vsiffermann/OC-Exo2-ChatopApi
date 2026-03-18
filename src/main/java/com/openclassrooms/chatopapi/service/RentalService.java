@@ -31,14 +31,14 @@ public class RentalService {
 
     public List<RentalDTO> getAllRentals() {
         return rentalRepository.findAll().stream()
-                .map(rentalMapper::toDto)
-                .map(this::getPictureUrl)
-                .collect(Collectors.toList());
+            .map(rentalMapper::toDto)
+            .map(this::getPictureUrl)
+            .collect(Collectors.toList());
     }
 
     public RentalDTO getRentalById(Integer id) {
         Rental rental = rentalRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
+            .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
         RentalDTO dto = rentalMapper.toDto(rental);
         return getPictureUrl(dto);
     }
@@ -83,7 +83,7 @@ public class RentalService {
 
     public RentalDTO updateRental(Integer id, RentalRequestDTO request) {
         Rental rental = rentalRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
+            .orElseThrow(() -> new EntityNotFoundException("Rental not found"));
         
         rentalMapper.updateEntityFromDto(request, rental);
         rental.setUpdatedAt(LocalDateTime.now());
