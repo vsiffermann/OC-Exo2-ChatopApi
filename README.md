@@ -26,9 +26,6 @@ REST API for the ChatOp rental platform.
    ```sql
    CREATE DATABASE chatop;
    ```
-
-   Schema and constraints are auto-created on first run via `src/main/resources/data.sql`.
-
    
 4. Run the application:
    ```bash
