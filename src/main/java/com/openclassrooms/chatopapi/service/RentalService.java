@@ -5,8 +5,12 @@ import com.openclassrooms.chatopapi.dto.RentalRequestDTO;
 import com.openclassrooms.chatopapi.mapper.RentalMapper;
 import com.openclassrooms.chatopapi.model.Rental;
 import com.openclassrooms.chatopapi.repository.RentalRepository;
+import com.openclassrooms.chatopapi.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,9 +29,13 @@ public class RentalService {
 
     private final RentalRepository rentalRepository;
     private final RentalMapper rentalMapper;
+    private final UserRepository userRepository;
     
-    private static final String UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/";
-    private static final String BASE_URL = "http://localhost:3001/uploads/";
+    @Value("${upload-full-dir}")
+    private String uploadDir;
+    
+    @Value("${base-url}")
+    private String baseUrl;
 
     public List<RentalDTO> getAllRentals() {
         return rentalRepository.findAll().stream()
@@ -43,7 +51,14 @@ public class RentalService {
         return getPictureUrl(dto);
     }
 
-    public RentalDTO createRental(RentalRequestDTO request, Integer ownerId) {
+    public RentalDTO createRental(RentalRequestDTO request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+
+        Integer ownerId = userRepository.findByEmail(email)
+            .orElseThrow(() -> new RuntimeException("User not found"))
+            .getId();
+
         Rental rental = rentalMapper.toEntity(request);
         rental.setOwnerId(ownerId);
         rental.setCreatedAt(LocalDateTime.now());
@@ -61,14 +76,14 @@ public class RentalService {
 
     private RentalDTO getPictureUrl(RentalDTO dto) {
         if (dto.getPicture() != null && !dto.getPicture().isEmpty()) {
-            dto.setPicture(BASE_URL + dto.getPicture());
+            dto.setPicture(baseUrl + dto.getPicture());
         }
         return dto;
     }
 
     private String savePicture(MultipartFile picture) {
         try {
-            Path uploadPath = Paths.get(UPLOAD_DIR);
+            Path uploadPath = Paths.get(uploadDir);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }

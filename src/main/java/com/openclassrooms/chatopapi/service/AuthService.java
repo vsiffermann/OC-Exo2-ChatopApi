@@ -11,6 +11,8 @@ import com.openclassrooms.chatopapi.security.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -57,11 +59,9 @@ public class AuthService {
     }
 
 
-    public UserDTO me(String token) {
-        String email = jwtUtils.getEmailFromToken(token);
-        if(!jwtUtils.validateToken(token)) {
-            throw new RuntimeException("Invalid token");
-        }
+    public UserDTO me() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
 
         User user = userRepository.findByEmail(email)
             .orElseThrow(() -> new RuntimeException("User not found"));

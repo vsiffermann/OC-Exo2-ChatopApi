@@ -3,7 +3,6 @@ package com.openclassrooms.chatopapi.controller;
 import com.openclassrooms.chatopapi.dto.RentalDTO;
 import com.openclassrooms.chatopapi.dto.RentalRequestDTO;
 import com.openclassrooms.chatopapi.service.RentalService;
-import com.openclassrooms.chatopapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -11,8 +10,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -26,7 +23,6 @@ import java.util.Map;
 public class RentalController {
 
     private final RentalService rentalService;
-    private final UserService userService;
 
     @Operation(summary = "Get all rentals")
     @ApiResponses(value = {
@@ -58,11 +54,8 @@ public class RentalController {
         @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content)
     })
     @PostMapping
-    public ResponseEntity<Map<String, String>> createRental(
-            @ModelAttribute RentalRequestDTO request,
-            @AuthenticationPrincipal UserDetails userDetails) {
-        Integer ownerId = getOwnerIdFromUserDetails(userDetails);
-        rentalService.createRental(request, ownerId);
+    public ResponseEntity<Map<String, String>> createRental(@ModelAttribute RentalRequestDTO request) {
+        rentalService.createRental(request);
         Map<String, String> response = new HashMap<>();
         response.put("message", "Rental created !");
         return ResponseEntity.ok(response);
@@ -82,9 +75,5 @@ public class RentalController {
         Map<String, String> response = new HashMap<>();
         response.put("message", "Rental updated !");
         return ResponseEntity.ok(response);
-    }
-
-    private Integer getOwnerIdFromUserDetails(UserDetails userDetails) {
-        return userService.getUserByEmail(userDetails.getUsername()).getId();
     }
 }

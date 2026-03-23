@@ -51,8 +51,7 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content)
     })
     @GetMapping("/me")
-    public ResponseEntity<UserDTO> me(@RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.substring(7);
-        return ResponseEntity.ok(authService.me(token));
+    public ResponseEntity<UserDTO> me() {
+        return ResponseEntity.ok(authService.me());
     }
 }
